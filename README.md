@@ -1,33 +1,15 @@
 # FocusAlert
 
-This template should help get you started developing with Vue 3 in Vite.
+功能描述：
+1、学习-休息循环控制
+小循环计时模块：随机设定时间（时间区间可由自己设定，默认5-8min内）-倒计时-提醒-15s倒计时-提醒.此过程循环5次
+（1）编写倒计时模块
+（2）编写循环
+（3）插入提醒
+小循环计数模块：小循环自动5次
+大循环计时：完成5轮小循环后，计时25min，结束提醒。
+下一轮大循环开启按钮
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
+2、状态切换与提醒
+3、数据记录、统计
+4、控制、暂停
