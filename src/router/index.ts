@@ -8,7 +8,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      children: [{ path: '/', name: 'focus', component: () => import('../views/Focus.vue') }],
+      children: [{ path: '', name: 'focus', component: () => import('@/views/Focus.vue') }],
     },
   ],
 })

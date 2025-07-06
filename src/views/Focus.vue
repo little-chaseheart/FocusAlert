@@ -15,6 +15,21 @@ onUnmounted(() => {
 })
 </script>
 
+<template>
+  <div class="focus-container">
+    <h2>专注计时器</h2>
+    <div class="timer-display">
+      <div class="time">{{ focusStore.minutes }}:{{ focusStore.seconds }}</div>
+    </div>
+
+    <!-- 音频控制按钮 -->
+    <div class="audio-controls">
+      <button class="play-btn">暂停</button>
+      <button class="stop-btn">重置</button>
+    </div>
+  </div>
+</template>
+
 <style scoped>
 .focus-container {
   max-width: 600px;
@@ -65,18 +80,3 @@ onUnmounted(() => {
   opacity: 0.8;
 }
 </style>
-
-<template>
-  <div class="focus-container">
-    <h2>专注计时器</h2>
-    <div class="timer-display">
-      <div class="time">{{ focusStore.minutes }}:{{ focusStore.seconds }}</div>
-    </div>
-
-    <!-- 音频控制按钮 -->
-    <div class="audio-controls">
-      <button @click="focusStore.playAlarm(5)" class="play-btn">暂停</button>
-      <button @click="focusStore.stopAlarm()" class="stop-btn">重置</button>
-    </div>
-  </div>
-</template>
