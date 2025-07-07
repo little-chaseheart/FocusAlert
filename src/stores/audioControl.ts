@@ -69,13 +69,14 @@ const useAudioStore = defineStore('alert', () => {
   }
 
   // 播放音频
-  const playAlarm = (duration: number = 5) => {
+  const playAlarm = (duration: number = 2, onComplete?: () => void) => {
     try {
       // 确保音频已预加载
       preloadAudio()
 
       if (!audio) {
         console.error('音频对象创建失败')
+        if (onComplete) onComplete()
         return
       }
 
@@ -89,25 +90,29 @@ const useAudioStore = defineStore('alert', () => {
         .then(() => {
           console.log('音频开始播放')
 
-          // 5秒后停止音频
+          // 按时停止音频
           audioTimer = setTimeout(() => {
             stopAlarm()
+            // 音频播放完成后执行回调
+            if (onComplete) {
+              onComplete()
+            }
           }, duration * 1000)
         })
         .catch((error) => {
           console.error('音频播放失败:', error)
           // 尝试使用备用方案
-          fallbackAlarm(duration)
+          fallbackAlarm(duration, onComplete)
         })
     } catch (error) {
       console.error('创建音频失败:', error)
       // 尝试使用备用方案
-      fallbackAlarm(duration)
+      fallbackAlarm(duration, onComplete)
     }
   }
 
   // 备用闹钟方案（使用浏览器内置音频）
-  const fallbackAlarm = (duration: number = 5) => {
+  const fallbackAlarm = (duration: number = 5, onComplete?: () => void) => {
     try {
       console.log('使用备用闹钟方案')
 
@@ -129,6 +134,10 @@ const useAudioStore = defineStore('alert', () => {
           setTimeout(() => {
             fallbackAudio.pause()
             fallbackAudio.currentTime = 0
+            // 备用音频播放完成后执行回调
+            if (onComplete) {
+              onComplete()
+            }
           }, duration * 1000)
         })
         .catch((error) => {
@@ -140,9 +149,17 @@ const useAudioStore = defineStore('alert', () => {
               icon: '/favicon.ico',
             })
           }
+          // 即使音频失败也要执行回调
+          if (onComplete) {
+            onComplete()
+          }
         })
     } catch (error) {
       console.error('备用方案失败:', error)
+      // 即使备用方案失败也要执行回调
+      if (onComplete) {
+        onComplete()
+      }
     }
   }
 

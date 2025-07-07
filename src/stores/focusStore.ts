@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
+import useAudioStore from './audioControl'
 import { ref } from 'vue'
+
+const audioStore = useAudioStore()
 
 const usefocusStore = defineStore('focus', () => {
   const remainingTime = ref(10)
@@ -58,15 +61,20 @@ const usefocusStore = defineStore('focus', () => {
       if (currentRound <= circletimes) {
         console.log(`开始第${currentRound}轮专注`)
 
-        // 专注时间结束后开始休息
+        // 专注时间结束后播放音频，音频播放完成后再开始休息
         startCounter(1 / 6, () => {
-          console.log('专注结束，开始休息')
-
-          // 休息时间结束后开始下一轮
-          startCounter(0.1, () => {
-            console.log('休息结束')
-            currentRound++
-            startFocusRound() // 开始下一轮
+          console.log('专注结束，播放音频')
+          audioStore.playAlarm(3, () => {
+            console.log('音频播放完成，开始休息')
+            // 音频播放完成后开始休息
+            startCounter(0.1, () => {
+              console.log('休息结束，播放音频')
+              audioStore.playAlarm(2, () => {
+                console.log('休息音频播放完成，开始下一轮')
+                currentRound++
+                startFocusRound() // 开始下一轮
+              })
+            })
           })
         })
       } else {
