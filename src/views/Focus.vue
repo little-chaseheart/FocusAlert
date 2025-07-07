@@ -7,7 +7,7 @@ const focusStore = usefocusStore()
 const audioStore = useAudioStore()
 
 // 加载与注销
-onMounted(() => focusStore.smallCircle())
+onMounted(() => focusStore.singleCircle())
 onBeforeMount(() => {
   focusStore.DeleteTimer()
 })

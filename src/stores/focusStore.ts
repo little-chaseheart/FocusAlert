@@ -54,7 +54,7 @@ const usefocusStore = defineStore('focus', () => {
   }
 
   // 专注循环
-  const smallCircle = (circletimes: number = 5) => {
+  const singleCircle = (circletimes: number = 5) => {
     let currentRound = 1
 
     const startFocusRound = () => {
@@ -62,12 +62,12 @@ const usefocusStore = defineStore('focus', () => {
         console.log(`开始第${currentRound}轮专注`)
 
         // 专注时间结束后播放音频，音频播放完成后再开始休息
-        startCounter(1 / 6, () => {
+        startCounter(7, () => {
           console.log('专注结束，播放音频')
           audioStore.playAlarm(3, () => {
             console.log('音频播放完成，开始休息')
             // 音频播放完成后开始休息
-            startCounter(0.1, () => {
+            startCounter(1 / 3, () => {
               console.log('休息结束，播放音频')
               audioStore.playAlarm(2, () => {
                 console.log('休息音频播放完成，开始下一轮')
@@ -78,10 +78,12 @@ const usefocusStore = defineStore('focus', () => {
           })
         })
       } else {
-        console.log('完成所有轮次，开始25分钟休息')
+        console.log('完成所有轮次,开始25分钟休息'),
+          startCounter(25, () => {
+            audioStore.playAlarm(5, () => console.log('大休息结束，可以开始下一轮学习了！'))
+          })
       }
     }
-
     startFocusRound()
   }
 
@@ -92,7 +94,7 @@ const usefocusStore = defineStore('focus', () => {
     startCounter,
     updateDisplay,
     DeleteTimer,
-    smallCircle,
+    singleCircle,
   }
 })
 
