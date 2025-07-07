@@ -7,6 +7,7 @@ const focusStore = usefocusStore()
 const audioStore = useAudioStore()
 
 // 加载与注销
+onMounted(() => focusStore.updateDisplay())
 onBeforeMount(() => {
   focusStore.DeleteTimer()
 })
@@ -29,8 +30,9 @@ onUnmounted(() => {
 
     <!-- 音频控制按钮 -->
     <div class="audio-controls">
-      <button class="play-btn" @click="focusStore.singleCircle()">开始专注循环</button>
-      <button class="play-btn" @click="audioStore.playAlarm()">暂停</button>
+      <button class="play-btn" @click="focusStore.startCircle()">开始专注循环</button>
+      <button class="play-btn" @click="focusStore.pauseCircle()">暂停</button>
+      <button class="play-btn" @click="focusStore.resumeCircle()">继续</button>
       <button class="stop-btn">重置</button>
       <button class="stop-btn" @click="() => focusStore.circletimes++">
         测试，{{ focusStore.circletimes }}

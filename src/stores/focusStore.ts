@@ -4,17 +4,20 @@ import { ref } from 'vue'
 
 const audioStore = useAudioStore()
 const usefocusStore = defineStore('focus', () => {
-  const remainingTime = ref(10)
+  const remainingTime = ref(0)
   let timer: number | null = null //定义时钟对象
   const minutes = ref('')
   const seconds = ref('')
   //定义休息时间
   const longRest = ref(25)
   const shortRest = ref(1 / 12)
-  //定义单次循环次数
+  //定义单次循环次数、当前第几次循环
   const circletimes = ref(1)
-  // 定义当前状态，学习中、缓口气、休憩
+  let currentRound = 1
+  //定义当前状态，学习中、缓口气、休憩
   const statement = ref('Rest')
+  //暂停标签. 暂停true, 不是暂停false
+  const isPause = ref(false)
 
   const updateDisplay = () => {
     const mins = Math.floor(remainingTime.value / 60)
@@ -24,7 +27,7 @@ const usefocusStore = defineStore('focus', () => {
   }
 
   // 倒计时
-  const startCounter = (timeInMinutes: number = 0.1, onComplete?: () => void) => {
+  const Counter = (timeInMinutes: number = 0.1, onComplete?: () => void) => {
     // 需要添加异步处理，不然不能添加倒计时循环
     // 停止之前的定时器
     if (timer) {
@@ -33,10 +36,13 @@ const usefocusStore = defineStore('focus', () => {
     }
 
     // 设置新的倒计时时间
-    remainingTime.value = timeInMinutes * 60
+    if (!isPause.value) {
+      remainingTime.value = timeInMinutes * 60
+    } // 不是暂停false就重设
     updateDisplay()
 
     timer = setInterval(() => {
+      // 不是暂停才继续
       remainingTime.value--
       if (remainingTime.value <= 0) {
         DeleteTimer()
@@ -59,42 +65,56 @@ const usefocusStore = defineStore('focus', () => {
     timer = null
   }
 
-  // 专注循环
-  const singleCircle = () => {
-    let currentRound = 1
-
-    const startFocusRound = () => {
-      if (currentRound <= circletimes.value) {
-        console.log(`开始第${currentRound}轮专注`)
-        statement.value = 'Focus'
-        console.log(statement.value)
-
-        // 专注时间结束后播放音频，音频播放完成后再开始休息
-        startCounter(0.1, () => {
-          console.log('专注结束，播放音频')
-          statement.value = 'Breathing'
-          audioStore.playAlarm(3, () => {
-            console.log('音频播放完成，开始休息')
-            // 音频播放完成后开始休息
-            startCounter(1 / 12, () => {
-              console.log('休息结束，播放音频')
-              audioStore.playAlarm(2, () => {
-                console.log('休息音频播放完成，开始下一轮')
-                currentRound++
-                startFocusRound() // 开始下一轮
-              })
+  // 单次全流程循环
+  const FocusRound = () => {
+    if (currentRound <= circletimes.value) {
+      console.log(`开始第${currentRound}轮专注`)
+      statement.value = 'Focus'
+      // 专注时间结束后播放音频，音频播放完成后再开始休息
+      Counter(0.1, () => {
+        console.log('专注结束，播放音频')
+        statement.value = 'Breathing'
+        audioStore.playAlarm(undefined, () => {
+          console.log('音频播放完成，开始休息')
+          // 音频播放完成后开始休息
+          Counter(1 / 12, () => {
+            console.log('休息结束，播放音频')
+            audioStore.playAlarm(undefined, () => {
+              console.log('休息音频播放完成，开始下一轮')
+              currentRound++
+              FocusRound() // 开始下一轮
             })
           })
         })
-      } else {
-        console.log('完成所有轮次,开始25分钟休息')
-        statement.value = 'Rest'
-        startCounter(25, () => {
-          audioStore.playAlarm(5, () => console.log('大休息结束，可以开始下一轮学习了！'))
-        })
-      }
+      })
+    } else {
+      console.log('完成所有轮次,开始25分钟休息')
+      statement.value = 'Rest'
+      Counter(25, () => {
+        audioStore.playAlarm(undefined, () => console.log('大休息结束，可以开始下一轮学习了！'))
+      })
     }
-    startFocusRound()
+  }
+
+  // 开始循环
+  const startCircle = () => {
+    isPause.value = false
+    currentRound = 1
+    FocusRound()
+  }
+
+  // 暂停循环
+  const pauseCircle = () => {
+    isPause.value = true
+    DeleteTimer()
+  }
+  // 继续循环
+  const resumeCircle = () => {
+    Counter(undefined, () => {
+      isPause.value = false
+      currentRound++
+      audioStore.playAlarm(undefined, () => FocusRound())
+    })
   }
 
   return {
@@ -103,10 +123,12 @@ const usefocusStore = defineStore('focus', () => {
     seconds,
     circletimes,
     statement,
-    startCounter,
+    Counter,
     updateDisplay,
     DeleteTimer,
-    singleCircle,
+    startCircle,
+    pauseCircle,
+    resumeCircle,
   }
 })
 

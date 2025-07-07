@@ -69,7 +69,7 @@ const useAudioStore = defineStore('alert', () => {
   }
 
   // 播放音频
-  const playAlarm = (duration: number = 5, onComplete?: () => void) => {
+  const playAlarm = (duration: number = 1, onComplete?: () => void) => {
     try {
       // 确保音频已预加载
       preloadAudio()
