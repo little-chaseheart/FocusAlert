@@ -6,7 +6,7 @@ const audioStore = useAudioStore()
 
 const usefocusStore = defineStore('focus', () => {
   const remainingTime = ref(10)
-  let timer: number | null = null
+  let timer: number | null = null //定义时钟对象
   const minutes = ref('')
   const seconds = ref('')
 
@@ -62,7 +62,7 @@ const usefocusStore = defineStore('focus', () => {
         console.log(`开始第${currentRound}轮专注`)
 
         // 专注时间结束后播放音频，音频播放完成后再开始休息
-        startCounter(7, () => {
+        startCounter(0.1, () => {
           console.log('专注结束，播放音频')
           audioStore.playAlarm(3, () => {
             console.log('音频播放完成，开始休息')

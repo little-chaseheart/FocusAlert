@@ -41,7 +41,7 @@ const useAudioStore = defineStore('alert', () => {
 
     const tryNextPath = () => {
       if (currentIndex >= paths.length) {
-        console.error('所有音频路径都失败了')
+        console.error('预加载：所有音频路径失败')
         return
       }
 
@@ -59,7 +59,7 @@ const useAudioStore = defineStore('alert', () => {
       audio!.addEventListener(
         'canplaythrough',
         () => {
-          console.log('找到可用的音频路径:', audio!.src)
+          console.log('预加载：找到可用的音频路径:', audio!.src)
         },
         { once: true },
       )
@@ -69,7 +69,7 @@ const useAudioStore = defineStore('alert', () => {
   }
 
   // 播放音频
-  const playAlarm = (duration: number = 2, onComplete?: () => void) => {
+  const playAlarm = (duration: number = 5, onComplete?: () => void) => {
     try {
       // 确保音频已预加载
       preloadAudio()
@@ -90,10 +90,9 @@ const useAudioStore = defineStore('alert', () => {
         .then(() => {
           console.log('音频开始播放')
 
-          // 按时停止音频
+          // 按时后停止音频
           audioTimer = setTimeout(() => {
             stopAlarm()
-            // 音频播放完成后执行回调
             if (onComplete) {
               onComplete()
             }
@@ -101,65 +100,9 @@ const useAudioStore = defineStore('alert', () => {
         })
         .catch((error) => {
           console.error('音频播放失败:', error)
-          // 尝试使用备用方案
-          fallbackAlarm(duration, onComplete)
         })
     } catch (error) {
       console.error('创建音频失败:', error)
-      // 尝试使用备用方案
-      fallbackAlarm(duration, onComplete)
-    }
-  }
-
-  // 备用闹钟方案（使用浏览器内置音频）
-  const fallbackAlarm = (duration: number = 5, onComplete?: () => void) => {
-    try {
-      console.log('使用备用闹钟方案')
-
-      // 创建新的音频对象，使用简单的提示音
-      const fallbackAudio = new Audio()
-
-      // 尝试使用浏览器内置的提示音
-      fallbackAudio.src =
-        'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT'
-
-      fallbackAudio.loop = true
-      fallbackAudio.volume = 0.3
-
-      fallbackAudio
-        .play()
-        .then(() => {
-          console.log('备用音频开始播放')
-
-          setTimeout(() => {
-            fallbackAudio.pause()
-            fallbackAudio.currentTime = 0
-            // 备用音频播放完成后执行回调
-            if (onComplete) {
-              onComplete()
-            }
-          }, duration * 1000)
-        })
-        .catch((error) => {
-          console.error('备用音频也失败了:', error)
-          // 最后尝试使用系统提示音
-          if (window.Notification && Notification.permission === 'granted') {
-            new Notification('专注时间结束！', {
-              body: '该休息了',
-              icon: '/favicon.ico',
-            })
-          }
-          // 即使音频失败也要执行回调
-          if (onComplete) {
-            onComplete()
-          }
-        })
-    } catch (error) {
-      console.error('备用方案失败:', error)
-      // 即使备用方案失败也要执行回调
-      if (onComplete) {
-        onComplete()
-      }
     }
   }
 
