@@ -3,12 +3,18 @@ import useAudioStore from './audioControl'
 import { ref } from 'vue'
 
 const audioStore = useAudioStore()
-
 const usefocusStore = defineStore('focus', () => {
   const remainingTime = ref(10)
   let timer: number | null = null //定义时钟对象
   const minutes = ref('')
   const seconds = ref('')
+  //定义休息时间
+  const longRest = ref(25)
+  const shortRest = ref(1 / 12)
+  //定义单次循环次数
+  const circletimes = ref(1)
+  // 定义当前状态，学习中、缓口气、休憩
+  const statement = ref('Rest')
 
   const updateDisplay = () => {
     const mins = Math.floor(remainingTime.value / 60)
@@ -54,20 +60,23 @@ const usefocusStore = defineStore('focus', () => {
   }
 
   // 专注循环
-  const singleCircle = (circletimes: number = 5) => {
+  const singleCircle = () => {
     let currentRound = 1
 
     const startFocusRound = () => {
-      if (currentRound <= circletimes) {
+      if (currentRound <= circletimes.value) {
         console.log(`开始第${currentRound}轮专注`)
+        statement.value = 'Focus'
+        console.log(statement.value)
 
         // 专注时间结束后播放音频，音频播放完成后再开始休息
         startCounter(0.1, () => {
           console.log('专注结束，播放音频')
+          statement.value = 'Breathing'
           audioStore.playAlarm(3, () => {
             console.log('音频播放完成，开始休息')
             // 音频播放完成后开始休息
-            startCounter(1 / 3, () => {
+            startCounter(1 / 12, () => {
               console.log('休息结束，播放音频')
               audioStore.playAlarm(2, () => {
                 console.log('休息音频播放完成，开始下一轮')
@@ -78,10 +87,11 @@ const usefocusStore = defineStore('focus', () => {
           })
         })
       } else {
-        console.log('完成所有轮次,开始25分钟休息'),
-          startCounter(25, () => {
-            audioStore.playAlarm(5, () => console.log('大休息结束，可以开始下一轮学习了！'))
-          })
+        console.log('完成所有轮次,开始25分钟休息')
+        statement.value = 'Rest'
+        startCounter(25, () => {
+          audioStore.playAlarm(5, () => console.log('大休息结束，可以开始下一轮学习了！'))
+        })
       }
     }
     startFocusRound()
@@ -91,6 +101,8 @@ const usefocusStore = defineStore('focus', () => {
     remainingTime,
     minutes,
     seconds,
+    circletimes,
+    statement,
     startCounter,
     updateDisplay,
     DeleteTimer,
