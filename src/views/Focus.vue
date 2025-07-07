@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, onBeforeMount, onMounted, onUnmounted } from 'vue'
 import usefocusStore from '@/stores/focusStore'
+import useAudioStore from '@/stores/audioControl'
 // 引入实例
 const focusStore = usefocusStore()
+const audioStore = useAudioStore()
 
 // 加载与注销
 onMounted(() => focusStore.smallCircle())
@@ -24,7 +26,7 @@ onUnmounted(() => {
 
     <!-- 音频控制按钮 -->
     <div class="audio-controls">
-      <button class="play-btn">暂停</button>
+      <button class="play-btn" @click="audioStore.playAlarm()">暂停</button>
       <button class="stop-btn">重置</button>
     </div>
   </div>
