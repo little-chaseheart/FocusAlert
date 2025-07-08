@@ -112,7 +112,9 @@ const showBreathing = ref(false)
         <button v-if="!focusStore.isStart" class="play-btn" @click="focusStore.startCircle()">
           开始
         </button>
-        <button v-else class="stop-btn" @click="focusStore.reset()">重置</button>
+        <el-tooltip v-else :content="`当前是第${focusStore.currentRound}轮`">
+          <button class="stop-btn" @click="focusStore.reset()">重置</button>
+        </el-tooltip>
 
         <!-- 暂停/继续按钮组 - 只在开始后才显示 -->
         <button
