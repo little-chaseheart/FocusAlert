@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount, onMounted, onUnmounted } from 'vue'
 import usefocusStore from '@/stores/focusStore'
 import useAudioStore from '@/stores/audioControl'
+import breathingCircle from './breathing-circle.vue'
 // 引入实例
 const focusStore = usefocusStore()
 const audioStore = useAudioStore()
@@ -26,6 +27,7 @@ const getStatusText = (status) => {
   return statusMap[status] || status
 }
 
+// 状态标签
 const getStatusClass = (status) => {
   const classMap = {
     Rest: 'status-rest',
@@ -34,6 +36,9 @@ const getStatusClass = (status) => {
   }
   return classMap[status] || 'status-default'
 }
+
+// 倒计时、动画切换
+const showBreathing = ref(false)
 </script>
 
 <template>
@@ -94,13 +99,15 @@ const getStatusClass = (status) => {
 
     <!-- 主要内容区域 -->
     <div class="focus-container">
-      <h2>专注计时器</h2>
-      <div class="timer-display">
-        <div class="time">{{ focusStore.minutes }}:{{ focusStore.seconds }}</div>
+      <div class="timer-display" @click="showBreathing = !showBreathing">
+        <div v-if="!showBreathing" class="time">
+          {{ focusStore.minutes }}:{{ focusStore.seconds }}
+        </div>
+        <breathing-circle v-else />
       </div>
 
-      <!-- 音频控制按钮 -->
-      <div class="audio-controls">
+      <!-- 控制按钮 -->
+      <div class="button-controls">
         <!-- 开始/重置按钮组 -->
         <button v-if="!focusStore.isStart" class="play-btn" @click="focusStore.startCircle()">
           开始
@@ -140,7 +147,7 @@ const getStatusClass = (status) => {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 20px 0;
+  padding: 0 0;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -215,22 +222,37 @@ const getStatusClass = (status) => {
 /* 设置面板 */
 .settings-panel {
   display: flex;
-  gap: 20px;
-  align-items: center;
+  gap: 24px;
+  align-items: flex-start;
   flex-wrap: wrap;
+  background: rgba(245, 245, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(102, 126, 234, 0.08);
+  padding: 18px 28px;
+  margin-top: 8px;
 }
 
 .setting-group {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  min-width: 140px;
+  transition: box-shadow 0.2s;
+}
+.setting-group:hover {
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.18);
 }
 
 .setting-label {
-  font-size: 0.85rem;
-  color: #666;
-  font-weight: 500;
-  text-align: center;
+  font-size: 1rem;
+  color: #5f5f7a;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .setting-input {
@@ -261,7 +283,7 @@ const getStatusClass = (status) => {
 /* 主要内容区域 */
 .focus-container {
   max-width: 600px;
-  margin: 40px auto;
+  margin: 9ch auto;
   padding: 40px 20px;
   text-align: center;
   background: rgba(255, 255, 255, 0.95);
@@ -279,6 +301,10 @@ const getStatusClass = (status) => {
 
 .timer-display {
   margin: 40px 0;
+  height: 120px; /* 保证切换时白框高度不变 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .time {
@@ -290,7 +316,7 @@ const getStatusClass = (status) => {
   letter-spacing: 2px;
 }
 
-.audio-controls {
+.button-controls {
   display: flex;
   gap: 15px;
   justify-content: center;
