@@ -15,103 +15,321 @@ onBeforeMount(() => {
 onUnmounted(() => {
   focusStore.DeleteTimer()
 })
+
+// 状态处理函数
+const getStatusText = (status) => {
+  const statusMap = {
+    Rest: '准备开始',
+    Focus: '专注学习中',
+    Breathing: '休息中',
+  }
+  return statusMap[status] || status
+}
+
+const getStatusClass = (status) => {
+  const classMap = {
+    Rest: 'status-rest',
+    Focus: 'status-focus',
+    Breathing: 'status-breathing',
+  }
+  return classMap[status] || 'status-default'
+}
 </script>
 
 <template>
-  <div class="header">
-    <p>循环次数：{{ focusStore.circletimes }}</p>
-    <p>当前状态：{{ focusStore.statement }}</p>
-    <p>单次专注时长：{{ focusStore.minTime }}分钟~{{ focusStore.maxTime }}分钟</p>
-    <!-- 调试信息 -->
-    <p>isStart: {{ focusStore.isStart }}, isPause: {{ focusStore.isPause }}</p>
-  </div>
-  <div class="focus-container">
-    <h2>专注计时器</h2>
-    <div class="timer-display">
-      <div class="time">{{ focusStore.minutes }}:{{ focusStore.seconds }}</div>
+  <div class="app-container">
+    <!-- 美观的 Header -->
+    <div class="header">
+      <div class="header-content">
+        <div class="header-left">
+          <h1 class="app-title">FocusAlert</h1>
+          <div class="status-info">
+            <span class="status-label">当前状态：</span>
+            <span class="status-value" :class="getStatusClass(focusStore.statement)">
+              {{ getStatusText(focusStore.statement) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="settings-panel">
+            <div class="setting-group">
+              <label class="setting-label">循环次数</label>
+              <el-input-number
+                v-model="focusStore.circletimes"
+                :min="1"
+                :max="10"
+                size="small"
+                class="setting-input"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label class="setting-label">专注时长范围</label>
+              <div class="time-range-inputs">
+                <el-input-number
+                  v-model="focusStore.minTime"
+                  :min="1"
+                  :max="focusStore.maxTime - 1"
+                  size="small"
+                  class="time-input"
+                  placeholder="最小"
+                />
+                <span class="time-separator">~</span>
+                <el-input-number
+                  v-model="focusStore.maxTime"
+                  :min="focusStore.minTime + 1"
+                  :max="30"
+                  size="small"
+                  class="time-input"
+                  placeholder="最大"
+                />
+                <span class="time-unit">分钟</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- 音频控制按钮 -->
-    <div class="audio-controls">
-      <!-- 开始/重置按钮组 -->
-      <button v-if="!focusStore.isStart" class="play-btn" @click="focusStore.startCircle()">
-        开始
-      </button>
-      <button v-else class="stop-btn" @click="focusStore.reset()">重置</button>
+    <!-- 主要内容区域 -->
+    <div class="focus-container">
+      <h2>专注计时器</h2>
+      <div class="timer-display">
+        <div class="time">{{ focusStore.minutes }}:{{ focusStore.seconds }}</div>
+      </div>
 
-      <!-- 暂停/继续按钮组 - 只在开始后才显示 -->
-      <button
-        v-if="focusStore.isStart && !focusStore.isPause"
-        class="pause-btn"
-        @click="focusStore.pauseCircle()"
-      >
-        暂停
-      </button>
-      <button
-        v-else-if="focusStore.isStart && focusStore.isPause"
-        class="resume-btn"
-        @click="focusStore.resumeCircle()"
-      >
-        继续
-      </button>
+      <!-- 音频控制按钮 -->
+      <div class="audio-controls">
+        <!-- 开始/重置按钮组 -->
+        <button v-if="!focusStore.isStart" class="play-btn" @click="focusStore.startCircle()">
+          开始
+        </button>
+        <button v-else class="stop-btn" @click="focusStore.reset()">重置</button>
+
+        <!-- 暂停/继续按钮组 - 只在开始后才显示 -->
+        <button
+          v-if="focusStore.isStart && !focusStore.isPause"
+          class="pause-btn"
+          @click="focusStore.pauseCircle()"
+        >
+          暂停
+        </button>
+        <button
+          v-else-if="focusStore.isStart && focusStore.isPause"
+          class="resume-btn"
+          @click="focusStore.resumeCircle()"
+        >
+          继续
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.focus-container {
-  max-width: 600px;
+/* 整体容器 */
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0;
+}
+
+/* Header 样式 */
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 20px 0;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.status-value {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-rest {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-focus {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.status-breathing {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.status-default {
+  background: #f5f5f5;
+  color: #666;
+}
+
+/* 设置面板 */
+.settings-panel {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
   text-align: center;
 }
 
+.setting-input {
+  width: 80px;
+}
+
+.time-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-input {
+  width: 70px;
+}
+
+.time-separator {
+  color: #666;
+  font-weight: 500;
+}
+
+.time-unit {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 主要内容区域 */
+.focus-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 40px 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.focus-container h2 {
+  margin: 0 0 30px 0;
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: 600;
+}
+
 .timer-display {
-  margin: 30px 0;
+  margin: 40px 0;
 }
 
 .time {
-  font-size: 4rem;
-  font-weight: bold;
-  font-family: monospace;
+  font-size: 4.5rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
   color: #333;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 2px;
 }
 
 .audio-controls {
   display: flex;
   gap: 15px;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
 }
 
 .play-btn,
 .stop-btn,
 .pause-btn,
 .resume-btn {
-  padding: 12px 24px;
+  padding: 15px 30px;
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
 }
 
 .play-btn {
-  background: #28a745;
+  background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
 }
 
 .stop-btn {
-  background: #dc3545;
+  background: linear-gradient(135deg, #dc3545, #e74c3c);
   color: white;
 }
 
 .pause-btn {
-  background: #ffc107;
+  background: linear-gradient(135deg, #ffc107, #ffb300);
   color: #212529;
 }
 
 .resume-btn {
-  background: #17a2b8;
+  background: linear-gradient(135deg, #17a2b8, #20c997);
   color: white;
 }
 
@@ -119,6 +337,54 @@ onUnmounted(() => {
 .stop-btn:hover,
 .pause-btn:hover,
 .resume-btn:hover {
-  opacity: 0.8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .settings-panel {
+    justify-content: center;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .time {
+    font-size: 3rem;
+  }
+
+  .audio-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .play-btn,
+  .stop-btn,
+  .pause-btn,
+  .resume-btn {
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 15px 0;
+  }
+
+  .focus-container {
+    margin: 20px auto;
+    padding: 30px 15px;
+  }
+
+  .time {
+    font-size: 2.5rem;
+  }
 }
 </style>

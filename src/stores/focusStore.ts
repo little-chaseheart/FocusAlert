@@ -16,7 +16,7 @@ const usefocusStore = defineStore('focus', () => {
   const longRest = ref(25)
   const shortRest = ref(1 / 12)
   //定义单次循环次数、当前第几次循环
-  const circletimes = ref(1)
+  const circletimes = ref(4)
   let currentRound = 1
   //定义当前状态，学习中、缓口气、休憩
   const statement = ref('Rest')
@@ -129,6 +129,7 @@ const usefocusStore = defineStore('focus', () => {
   // 重置
   const reset = () => {
     isStart.value = false
+    statement.value = 'Rest'
     DeleteTimer()
     remainingTime.value = 0
     updateDisplay()
