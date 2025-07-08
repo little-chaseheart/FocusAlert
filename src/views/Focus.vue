@@ -21,6 +21,7 @@ onUnmounted(() => {
   <div class="header">
     <p>循环次数：{{ focusStore.circletimes }}</p>
     <p>当前状态：{{ focusStore.statement }}</p>
+    <p>单次专注时长：{{ focusStore.minTime }}分钟~{{ focusStore.maxTime }}分钟</p>
     <!-- 调试信息 -->
     <p>isStart: {{ focusStore.isStart }}, isPause: {{ focusStore.isPause }}</p>
   </div>

@@ -1,9 +1,13 @@
 import { defineStore } from 'pinia'
 import useAudioStore from './audioControl'
 import { ref } from 'vue'
+import { getRandomTimes } from '@/utils/timeUtils'
 
 const audioStore = useAudioStore()
 const usefocusStore = defineStore('focus', () => {
+  //定义单次学习时间
+  const minTime = ref(5)
+  const maxTime = ref(8)
   const remainingTime = ref(0)
   let timer: number | null = null //定义时钟对象
   const minutes = ref('')
@@ -72,8 +76,9 @@ const usefocusStore = defineStore('focus', () => {
     if (currentRound <= circletimes.value) {
       console.log(`开始第${currentRound}轮专注`)
       statement.value = 'Focus'
+      remainingTime.value = getRandomTimes(minTime.value, maxTime.value)
       // 专注时间结束后播放音频，音频播放完成后再开始休息
-      Counter(0.1, () => {
+      Counter(remainingTime.value / 60, () => {
         console.log('专注结束，播放音频')
         statement.value = 'Breathing'
         audioStore.playAlarm(undefined, () => {
@@ -138,6 +143,8 @@ const usefocusStore = defineStore('focus', () => {
     statement,
     isStart,
     isPause,
+    minTime,
+    maxTime,
     Counter,
     updateDisplay,
     DeleteTimer,

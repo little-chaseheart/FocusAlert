@@ -4,8 +4,12 @@
  * @returns 格式化后的时间字符串
  */
 export function formatTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+}
 
-  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+// 在时间区间内随机取秒数
+export function getRandomTimes(minMinutes: number, maxMinutes: number): number {
+  return Math.floor(Math.random() * (maxMinutes - minMinutes) * 60) + minMinutes * 60
 }
