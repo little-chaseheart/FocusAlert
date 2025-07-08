@@ -18,6 +18,8 @@ const usefocusStore = defineStore('focus', () => {
   const statement = ref('Rest')
   //暂停标签. 暂停true, 不是暂停false
   const isPause = ref(false)
+  //开始标签
+  const isStart = ref(false)
 
   const updateDisplay = () => {
     const mins = Math.floor(remainingTime.value / 60)
@@ -98,7 +100,9 @@ const usefocusStore = defineStore('focus', () => {
 
   // 开始循环
   const startCircle = () => {
+    isStart.value = true
     isPause.value = false
+
     currentRound = 1
     FocusRound()
   }
@@ -110,11 +114,19 @@ const usefocusStore = defineStore('focus', () => {
   }
   // 继续循环
   const resumeCircle = () => {
-    Counter(undefined, () => {
-      isPause.value = false
+    isPause.value = false
+    Counter(remainingTime.value / 60, () => {
       currentRound++
       audioStore.playAlarm(undefined, () => FocusRound())
     })
+  }
+
+  // 重置
+  const reset = () => {
+    isStart.value = false
+    DeleteTimer()
+    remainingTime.value = 0
+    updateDisplay()
   }
 
   return {
@@ -122,13 +134,17 @@ const usefocusStore = defineStore('focus', () => {
     minutes,
     seconds,
     circletimes,
+    currentRound,
     statement,
+    isStart,
+    isPause,
     Counter,
     updateDisplay,
     DeleteTimer,
     startCircle,
     pauseCircle,
     resumeCircle,
+    reset,
   }
 })
 

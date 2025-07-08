@@ -21,6 +21,8 @@ onUnmounted(() => {
   <div class="header">
     <p>循环次数：{{ focusStore.circletimes }}</p>
     <p>当前状态：{{ focusStore.statement }}</p>
+    <!-- 调试信息 -->
+    <p>isStart: {{ focusStore.isStart }}, isPause: {{ focusStore.isPause }}</p>
   </div>
   <div class="focus-container">
     <h2>专注计时器</h2>
@@ -30,12 +32,26 @@ onUnmounted(() => {
 
     <!-- 音频控制按钮 -->
     <div class="audio-controls">
-      <button class="play-btn" @click="focusStore.startCircle()">开始专注循环</button>
-      <button class="play-btn" @click="focusStore.pauseCircle()">暂停</button>
-      <button class="play-btn" @click="focusStore.resumeCircle()">继续</button>
-      <button class="stop-btn">重置</button>
-      <button class="stop-btn" @click="() => focusStore.circletimes++">
-        测试，{{ focusStore.circletimes }}
+      <!-- 开始/重置按钮组 -->
+      <button v-if="!focusStore.isStart" class="play-btn" @click="focusStore.startCircle()">
+        开始
+      </button>
+      <button v-else class="stop-btn" @click="focusStore.reset()">重置</button>
+
+      <!-- 暂停/继续按钮组 - 只在开始后才显示 -->
+      <button
+        v-if="focusStore.isStart && !focusStore.isPause"
+        class="pause-btn"
+        @click="focusStore.pauseCircle()"
+      >
+        暂停
+      </button>
+      <button
+        v-else-if="focusStore.isStart && focusStore.isPause"
+        class="resume-btn"
+        @click="focusStore.resumeCircle()"
+      >
+        继续
       </button>
     </div>
   </div>
@@ -68,7 +84,9 @@ onUnmounted(() => {
 }
 
 .play-btn,
-.stop-btn {
+.stop-btn,
+.pause-btn,
+.resume-btn {
   padding: 12px 24px;
   border: none;
   border-radius: 5px;
@@ -86,8 +104,20 @@ onUnmounted(() => {
   color: white;
 }
 
+.pause-btn {
+  background: #ffc107;
+  color: #212529;
+}
+
+.resume-btn {
+  background: #17a2b8;
+  color: white;
+}
+
 .play-btn:hover,
-.stop-btn:hover {
+.stop-btn:hover,
+.pause-btn:hover,
+.resume-btn:hover {
   opacity: 0.8;
 }
 </style>
