@@ -18,7 +18,7 @@ const usefocusStore = defineStore('focus', () => {
   //定义单次循环次数、当前第几次循环
   const circletimes = computed(() => Math.floor(180 / (minTime.value + maxTime.value)))
   let currentRound = 1
-  //定义当前状态，学习中、缓口气、休憩
+  //定义当前状态，Focus/Rest/Breathing
   const statement = ref('Rest')
   //暂停标签. 暂停true, 不是暂停false
   const isPause = ref(false)
@@ -109,11 +109,13 @@ const usefocusStore = defineStore('focus', () => {
   // 暂停循环
   const pauseCircle = () => {
     isPause.value = true
+    statement.value = 'Breathing'
     DeleteTimer()
   }
   // 继续循环
   const resumeCircle = () => {
     isPause.value = false
+    statement.value = 'Focus'
     Counter(remainingTime.value / 60, () => {
       currentRound++
       audioStore.playAlarm(undefined, () => FocusRound())
