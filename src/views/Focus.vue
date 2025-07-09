@@ -100,10 +100,12 @@ const showBreathing = ref(false)
     <!-- 主要内容区域 -->
     <div class="focus-container">
       <div class="timer-display" @click="showBreathing = !showBreathing">
-        <div v-if="!showBreathing" class="time">
-          {{ focusStore.minutes }}:{{ focusStore.seconds }}
-        </div>
-        <breathing-circle v-else />
+        <el-tooltip content="点击切换动画 / 倒计时">
+          <div v-if="!showBreathing" class="time">
+            {{ focusStore.minutes }}:{{ focusStore.seconds }}
+          </div>
+          <breathing-circle v-else />
+        </el-tooltip>
       </div>
 
       <!-- 控制按钮 -->

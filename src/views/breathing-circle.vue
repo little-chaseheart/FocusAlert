@@ -1,6 +1,5 @@
 <script setup>
 import usefocusStore from '@/stores/focusStore'
-const focusStore = usefocusStore()
 </script>
 <template>
   <div class="container">

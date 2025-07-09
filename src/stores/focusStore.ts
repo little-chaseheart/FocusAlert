@@ -3,8 +3,8 @@ import useAudioStore from './audioControl'
 import { ref } from 'vue'
 import { getRandomTimes } from '@/utils/timeUtils'
 
-const audioStore = useAudioStore()
 const usefocusStore = defineStore('focus', () => {
+  const audioStore = useAudioStore()
   //定义单次学习时间
   const minTime = ref(5)
   const maxTime = ref(8)

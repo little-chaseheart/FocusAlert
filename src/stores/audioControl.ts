@@ -10,7 +10,7 @@ const useAudioStore = defineStore('alert', () => {
     if (!audio) {
       audio = new Audio()
       // 使用相对路径
-      audio.src = '/src/assets/闹钟声音1.mp3'
+      audio.src = '/src/assets/钟声.mp3'
       audio.preload = 'auto'
 
       // 监听加载事件
@@ -69,7 +69,7 @@ const useAudioStore = defineStore('alert', () => {
   }
 
   // 播放音频
-  const playAlarm = (duration: number = 1, onComplete?: () => void) => {
+  const playAlarm = (duration: number = 5, onComplete?: () => void) => {
     try {
       // 确保音频已预加载
       preloadAudio()
