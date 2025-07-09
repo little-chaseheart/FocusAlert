@@ -36,9 +36,6 @@ const getStatusClass = (status) => {
   }
   return classMap[status] || 'status-default'
 }
-
-// 倒计时、动画切换
-const showCounter = ref(false)
 </script>
 
 <template>
@@ -105,9 +102,9 @@ const showCounter = ref(false)
 
     <!-- 主要内容区域 -->
     <div class="focus-container">
-      <div class="timer-display" @click="showCounter = !showCounter">
+      <div class="timer-display" @click="focusStore.showCounter = !focusStore.showCounter">
         <el-tooltip content="点击切换动画 / 倒计时">
-          <div v-if="showCounter" class="time">
+          <div v-if="focusStore.showCounter" class="time">
             {{ focusStore.minutes }}:{{ focusStore.seconds }}
           </div>
           <breathing-circle v-else />

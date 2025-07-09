@@ -24,6 +24,8 @@ const usefocusStore = defineStore('focus', () => {
   const isPause = ref(false)
   //开始标签
   const isStart = ref(false)
+  //倒计时显示标签
+  const showCounter = ref(true)
 
   const updateDisplay = () => {
     const mins = Math.floor(remainingTime.value / 60)
@@ -101,7 +103,7 @@ const usefocusStore = defineStore('focus', () => {
   const startCircle = () => {
     isStart.value = true
     isPause.value = false
-
+    showCounter.value = false
     currentRound = 1
     FocusRound()
   }
@@ -142,6 +144,7 @@ const usefocusStore = defineStore('focus', () => {
     isPause,
     minTime,
     maxTime,
+    showCounter,
     Counter,
     updateDisplay,
     DeleteTimer,
