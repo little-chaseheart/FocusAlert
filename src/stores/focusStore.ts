@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 import useAudioStore from './audioControl'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { getRandomTimes } from '@/utils/timeUtils'
 
 const usefocusStore = defineStore('focus', () => {
   const audioStore = useAudioStore()
   //定义单次学习时间
-  const minTime = ref(5)
-  const maxTime = ref(8)
+  const minTime = ref(3)
+  const maxTime = ref(5)
   const remainingTime = ref(0)
   let timer: number | null = null //定义时钟对象
   const minutes = ref('')
@@ -16,7 +16,7 @@ const usefocusStore = defineStore('focus', () => {
   const longRest = ref(25)
   const shortRest = ref(1 / 12)
   //定义单次循环次数、当前第几次循环
-  const circletimes = ref(4)
+  const circletimes = computed(() => Math.floor(180 / (minTime.value + maxTime.value)))
   let currentRound = 1
   //定义当前状态，学习中、缓口气、休憩
   const statement = ref('Rest')

@@ -53,12 +53,16 @@ const showBreathing = ref(false)
             <span class="status-value" :class="getStatusClass(focusStore.statement)">
               {{ getStatusText(focusStore.statement) }}
             </span>
+            <span class="status-label">循环次数：</span>
+            <span class="status-value status-rest">
+              {{ focusStore.circletimes }}
+            </span>
           </div>
         </div>
 
         <div class="header-right">
           <div class="settings-panel">
-            <div class="setting-group">
+            <!-- <div class="setting-group">
               <label class="setting-label">循环次数</label>
               <el-input-number
                 v-model="focusStore.circletimes"
@@ -67,7 +71,7 @@ const showBreathing = ref(false)
                 size="small"
                 class="setting-input"
               />
-            </div>
+            </div> -->
 
             <div class="setting-group">
               <label class="setting-label">专注时长范围</label>
@@ -219,7 +223,7 @@ const showBreathing = ref(false)
 }
 
 .status-default {
-  background: #f5f5f5;
+  background: #e3f2fd;
   color: #666;
 }
 
