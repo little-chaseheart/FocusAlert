@@ -48,7 +48,6 @@ const usefocusStore = defineStore('focus', () => {
     updateDisplay()
 
     timer = setInterval(() => {
-      // 不是暂停才继续
       remainingTime.value--
       if (remainingTime.value <= 0) {
         DeleteTimer()
@@ -79,19 +78,14 @@ const usefocusStore = defineStore('focus', () => {
       remainingTime.value = getRandomTimes(minTime.value, maxTime.value)
       // 专注时间结束后播放音频，音频播放完成后再开始休息
       Counter(remainingTime.value / 60, () => {
-        console.log('专注结束，播放音频')
         statement.value = 'Breathing'
-        audioStore.playAlarm(undefined, () => {
-          console.log('音频播放完成，开始休息')
-          // 音频播放完成后开始休息
-          Counter(1 / 12, () => {
-            console.log('休息结束，播放音频')
-            audioStore.playAlarm(undefined, () => {
-              console.log('休息音频播放完成，开始下一轮')
-              currentRound++
-              FocusRound() // 开始下一轮
-            })
-          })
+        audioStore.playAlarm()
+        // 音频播放,开始休息
+        Counter(1 / 6, () => {
+          console.log('休息结束，播放音频')
+          audioStore.playAlarm()
+          currentRound++
+          FocusRound() // 开始下一轮
         })
       })
     } else {
