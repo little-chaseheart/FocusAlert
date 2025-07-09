@@ -83,6 +83,7 @@ const showBreathing = ref(false)
                   size="small"
                   class="time-input"
                   placeholder="最小"
+                  :disabled="focusStore.isStart"
                 />
                 <span class="time-separator">~</span>
                 <el-input-number
@@ -92,6 +93,7 @@ const showBreathing = ref(false)
                   size="small"
                   class="time-input"
                   placeholder="最大"
+                  :disabled="focusStore.isStart"
                 />
                 <span class="time-unit">分钟</span>
               </div>
