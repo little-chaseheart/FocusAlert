@@ -1,33 +1,104 @@
 # FocusAlert
 
-功能描述：
-1、学习-休息循环控制
-小循环计时模块：随机设定时间（时间区间可由自己设定，默认5-8min内）-倒计时-提醒-15s倒计时-提醒.此过程循环5次 √
-（1）编写倒计时模块 √
-（2）编写循环，内嵌多个倒计时，处理异步 √
-（3）插入提醒，持续时间5s，插入响铃 √
-（4）完成5次循环后，倒计时25分钟，衔接提醒 √
+> 一款基于 Tauri + Vue3 的极简专注计时桌面应用，支持多平台打包，适合学习、工作时提升专注力。
 
-大循环结束休息25分钟：完成5轮小循环后，计时25min，结束提醒。 √
-下一轮大循环开启按钮
+---
 
-2、状态切换与提醒
-状态标签变量建立，学习中、缓口气、休憩 √
-状态标签渲染
-3、数据记录、统计
-不必要
-4、控制、暂停
-（1）暂停、继续 √
-（2）重置 √
-（3）开始 √
-（4）带条件模板按钮√
-5、修改动态参数。将，倒计时时间、小循环次数、休息时长变量化
-（1）单次专注时间
-定义时间区间√
-定义随机时间√
-（2）渲染对应input框，设定好placeholder√
-（3）v-model绑定√
+## ✨ 功能特性
 
-6、编写呼吸动画，点击可实现动画、倒计时相互切换√
+- ⏳ **专注计时**：自定义专注时长范围，自动循环专注与休息。
+- 🔔 **音频提醒**：每轮专注/休息结束自动播放提示音。
+- 🌈 **美观界面**：渐变背景、圆形动画、响应式设计。
+- 🖥️ **跨平台**：支持 Windows、macOS、Linux 桌面端。
+- 🛠️ **Tauri 打包**：体积小、性能高、原生体验。
+- 🧩 **可自定义**：支持自定义循环次数、专注/休息时长。
 
-7、美化输入框√
+---
+
+## 🚀 快速开始
+
+### 1. 克隆项目
+
+```bash
+git clone https://github.com/little-chaseheart/FocusAlert.git
+cd FocusAlert
+```
+
+### 2. 安装依赖
+
+```bash
+npm install
+```
+
+### 3. 启动开发环境
+
+- 启动前端（Vite）：
+  ```bash
+  npm run dev
+  ```
+- 启动桌面端（Tauri）：
+  ```bash
+  npx tauri dev
+  ```
+
+### 4. 打包应用
+
+```bash
+npx tauri build
+```
+
+打包产物在 `src-tauri/target/release/bundle/` 目录下。
+
+---
+
+## 🖼️ 界面预览
+
+![screenshot](./screenshot.png) <!-- 你可以自行添加应用截图 -->
+
+---
+
+## ⚙️ 主要技术栈
+
+- [Vue 3](https://vuejs.org/)
+- [Pinia](https://pinia.vuejs.org/) 状态管理
+- [Element Plus](https://element-plus.org/) 组件库
+- [Tauri](https://tauri.app/) 跨平台桌面应用框架
+- [Vite](https://vitejs.dev/) 前端构建工具
+
+---
+
+## 📁 目录结构
+
+```
+FocusAlert/
+  ├─ src/                # 前端源码
+  ├─ src-tauri/          # Tauri 配置与 Rust 后端
+  ├─ public/             # 静态资源
+  ├─ package.json
+  └─ README.md
+```
+
+---
+
+## 📝 自定义与配置
+
+- **专注/休息时长**：可在界面右上角设置。
+- **音频提醒**：可替换 `src/assets/钟声.mp3` 或 `src/assets/闹钟声音1.mp3`。
+- **应用图标**：替换 `src-tauri/icons/` 下的图标文件，并在 `tauri.conf.json` 配置。
+
+---
+
+## 📦 跨平台打包
+
+- macOS、Windows、Linux 各平台需在对应系统下打包，或使用 GitHub Actions 自动打包（见下方）。
+- [Tauri 官方打包文档](https://tauri.app/v2/guides/distribution/)
+
+---
+
+## 🤖 自动化打包（GitHub Actions）
+
+可参考 `.github/workflows/tauri.yml`，实现全平台自动打包与发布。
+
+---
+
+> 欢迎 Star、Fork、提 Issue！
