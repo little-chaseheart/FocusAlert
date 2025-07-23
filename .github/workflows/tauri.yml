@@ -2,6 +2,8 @@ name: Tauri Build and Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*.*.*'
   workflow_dispatch:
@@ -10,7 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        platform: [macos-latest, windows-latest]
+        platform: [macos-latest, windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.platform }}
 
     steps:
